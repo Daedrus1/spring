@@ -12,15 +12,27 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        if (book.getId() == null) {
-            entityManager.persist(book);
-            return book;
+        try {
+            if (book.getId() == null) {
+                entityManager.persist(book);
+                return book;
+            }
+            return entityManager.merge(book);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot save book: " + book, e);
         }
-        return entityManager.merge(book);
     }
 
     @Override
     public List<Book> findAll() {
-        return entityManager.createQuery("FROM Book", Book.class).getResultList();
+        try {
+            return entityManager
+                    .createQuery("FROM Book", Book.class)
+                    .getResultList();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Cannot fetch books", e);
+        }
     }
 }
