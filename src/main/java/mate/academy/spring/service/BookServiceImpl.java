@@ -1,23 +1,40 @@
 package mate.academy.spring.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import lombok.NoArgsConstructor;
+import mate.academy.spring.dto.BookDto;
+import mate.academy.spring.dto.CreateBookRequestDto;
+import mate.academy.spring.mapper.BookMapper;
 import mate.academy.spring.model.Book;
 import mate.academy.spring.repository.BookRepository;
+import org.springframework.stereotype.Service;
 
+@NoArgsConstructor
+@Service
 public class BookServiceImpl implements BookService {
+
     private BookRepository bookRepository;
+    private BookMapper bookMapper;
 
-    public BookServiceImpl(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
+    @Override
+    public List<BookDto> getAll() {
+        return bookRepository.findAll()
+                .stream()
+                .map(bookMapper::toDto)
+                .toList();
     }
 
     @Override
-    public Book save(Book book) {
-        return bookRepository.save(book);
+    public BookDto getBookById(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found: id=" + id));
+        return bookMapper.toDto(book);
     }
 
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public BookDto createBook(CreateBookRequestDto bookDto) {
+        Book book = bookMapper.toModel(bookDto);
+        return bookMapper.toDto(bookRepository.save(book));
     }
 }
