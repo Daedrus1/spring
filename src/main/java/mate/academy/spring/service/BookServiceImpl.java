@@ -2,7 +2,7 @@ package mate.academy.spring.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import mate.academy.spring.dto.BookDto;
 import mate.academy.spring.dto.CreateBookRequestDto;
 import mate.academy.spring.mapper.BookMapper;
@@ -10,12 +10,12 @@ import mate.academy.spring.model.Book;
 import mate.academy.spring.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
 
-    private BookRepository bookRepository;
-    private BookMapper bookMapper;
+    private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
     @Override
     public List<BookDto> getAll() {
